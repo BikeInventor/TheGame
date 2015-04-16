@@ -1,5 +1,4 @@
 using UnityEngine;
-using Pathfinding;
 using System.Collections;
 
 public class Enemy_AI : MonoBehaviour {
@@ -8,17 +7,19 @@ public class Enemy_AI : MonoBehaviour {
 	public float health;
 	public float speed = 300f;
 	public int attackDistance = 20;
+	public AudioClip alienHit;
 
 	private Rigidbody2D rb;
 	private Animator anim;
 	public ForceMode2D fMode;
 	private Vector3 targetDirection;
+	private Inventory inventory;
 
 	private float distanceToPlayer = 50;
 
 	void Awake()
 	{
-		anim = GetComponent<Animator>();
+		inventory = GameObject.FindObjectOfType<Inventory>();
 		anim = GetComponent<Animator>();
 		rb = GetComponent<Rigidbody2D> ();
 	}
@@ -27,37 +28,78 @@ public class Enemy_AI : MonoBehaviour {
 	{
 		if (target == null) 
 		{
-			Debug.Log ("No target found!");
-			return;
+			FindPlayer();
 		}
-		GetDirectionAndDistance ();
+	}
+
+	void Update()
+	{
+		StartCoroutine(GetDirectionAndDistance ());
 		MoveToPlayer ();
 	}
 
-	void GetDirectionAndDistance()
+	IEnumerator GetDirectionAndDistance()
 	{
-		distanceToPlayer = Vector3.Distance (target.transform.position, this.transform.position);
+		yield return new WaitForSeconds (1);
+		if (target == null)
+			FindPlayer ();
 
-		targetDirection = (target.position - this.transform.position).Normalize ();
-
-		Debug.Log ("DIST: " + distanceToPlayer);
+		distanceToPlayer = Vector2.Distance (target.transform.position, this.transform.position);
+		targetDirection = (target.position - this.transform.position);
 	}
 
 	void MoveToPlayer()
 	{
 		if (distanceToPlayer < attackDistance) 
 		{
-			rb.AddForce (targetDirection * speed, fMode);
+			SetFacingDirection();
+			targetDirection.Normalize();
+			rb.AddForce (targetDirection.normalized * speed, fMode);
 			anim.SetFloat ("moveSpeed", 100);
 		} 
 		else 
 		{
 			anim.SetFloat ("moveSpeed", 0);
 		}
-
 	}
 
+	void SetFacingDirection()
+	{
+		int direction = 1;
+		if (targetDirection.x > 0) direction = -1;
+		this.transform.localScale = new Vector3 (direction, 1, 1);
+	}
 
+	void FindPlayer()
+	{
+		GameObject targetObj = GameObject.FindGameObjectWithTag("Player");
+		if (targetObj != null) 
+		{
+			target = targetObj.transform;
+		} 
+	}
+
+	void OnCollisionEnter2D(Collision2D col)
+	{
+		if (col.gameObject.tag == "BulletTrail") 
+		{
+			System.String currentWeapon = inventory.GetActiveItemName();
+			float damage = GameObject.Find (currentWeapon).GetComponent<Weapon>().damage;
+			health -= damage;
+
+			audio.clip = alienHit;
+			if (!audio.isPlaying)
+				audio.Play ();
+
+			if (health <= 0)
+				Death();
+		}
+	}
+
+	void Death()
+	{
+		Destroy (this.gameObject);
+	}
 
 
 

@@ -48,6 +48,13 @@ public class Weapon : MonoBehaviour
 		bool isValidAngle = GameObject.Find ("AsArm").GetComponent<ArmRotation>().isValidAngle();
 		bulletsCount = inventory.GetValueByName (weaponType);
 
+		if (Input.GetKeyDown (KeyCode.R)) 
+		{
+			if (isReloading || bulletsCount % bulletsInMagazine == 0) 
+				return;
+			StartCoroutine(Reloading()); 
+		}
+
 		if (isValidAngle && isAiming) 
 		{
 			if (fireRate == 0) 
@@ -141,6 +148,7 @@ public class Weapon : MonoBehaviour
 		audio.clip = reloadingSound;
 		audio.Play ();
 		yield return new WaitForSeconds (2);
+		inventory.SetValueByName(weaponType, bulletsCount - bulletsCount % bulletsInMagazine);
 		isReloading = false;
 		isReloaded = true;
 	}

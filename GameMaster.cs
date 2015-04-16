@@ -85,8 +85,6 @@ public class GameMaster : MonoBehaviour {
 		GUI.skin.box.fontSize = 20;
 		GUI.skin.box.imagePosition = ImagePosition.ImageAbove;
 		GUI.Box (new Rect (1, 1, 250f, 150f), itemTexture);
-		//GUI.Box (new Rect (1, 150, 250f, 30f), "Ammo: " + itemCount);
-
 		GUI.Box (new Rect (1, 150, 250f, 30f), "Ammo: " + currentMagazine + "/" + otherMagazines);
 	}
 	
