@@ -23,20 +23,20 @@ public class ArmRotation : MonoBehaviour {
 
 	}
 	// Возвращает true, если руку можно повернуть на данный угол и false, если нельзя
-	// public, чтоб можно было достать из Weapon.cs 
 	public bool isValidAngle()
 	{
+
 		// Направление игрока. Положительное - смотрит вправо, отрицательное - влево.
 		float playerDirection = GameObject.Find ("Graphics").transform.localScale.x;
-		
+
 		if (playerDirection > 0) // Вправо
 		{ 
-			if (rotZ > -60 && rotZ < 60) 
+			if (rotZ > -70 && rotZ < 70) 
 				return true;
 		}
 		else // Влево
 		{
-			if ((rotZ > 130 && rotZ < 180) || (rotZ > -180 && rotZ < -130 ))
+			if ((rotZ > 100 && rotZ < 180) || (rotZ > -180 && rotZ < -130 ))
 				return true;
 		}
 		return false;

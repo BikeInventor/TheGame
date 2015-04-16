@@ -11,6 +11,7 @@ public class MedKitPickUp: MonoBehaviour {
 		if (info.tag == "Player") 
 		{
 			int currentHealth = GameObject.FindObjectOfType<Player>().GetComponent<Player>().playerStats.health;
+			if (currentHealth == 100) return;
 			int newHealth = currentHealth + Random.Range(30,75);
 			newHealth = (newHealth > 100) ? 100 : newHealth;
 			GameObject.FindObjectOfType<Player>().GetComponent<Player>().playerStats.health = newHealth;

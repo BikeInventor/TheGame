@@ -5,8 +5,10 @@ public class Enemy_AI : MonoBehaviour {
 
 	public Transform target;
 	public float health;
+	public float maxHealth = 100;
 	public float speed = 300f;
 	public int attackDistance = 20;
+	public int jumpForce = 3;
 	public AudioClip alienHit;
 
 	private Rigidbody2D rb;
@@ -83,8 +85,8 @@ public class Enemy_AI : MonoBehaviour {
 	{
 		if (col.gameObject.tag == "BulletTrail") 
 		{
-			System.String currentWeapon = inventory.GetActiveItemName();
-			float damage = GameObject.Find (currentWeapon).GetComponent<Weapon>().damage;
+			System.String currentWeapon = inventory.GetActiveItemName ();
+			float damage = GameObject.Find (currentWeapon).GetComponent<Weapon> ().damage;
 			health -= damage;
 
 			audio.clip = alienHit;
@@ -92,7 +94,11 @@ public class Enemy_AI : MonoBehaviour {
 				audio.Play ();
 
 			if (health <= 0)
-				Death();
+				Death ();
+		} 
+		if (col.gameObject.tag == "Obstacle") 
+		{
+			rb.AddForce(Vector2.up * jumpForce, ForceMode2D.Impulse);
 		}
 	}
 

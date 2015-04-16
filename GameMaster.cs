@@ -19,7 +19,7 @@ public class GameMaster : MonoBehaviour {
 
 	void Start () 
 	{
-		Screen.showCursor = false;
+		//Screen.showCursor = false;
 		if (gm == null) 
 		{
 			gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
