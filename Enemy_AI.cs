@@ -36,18 +36,26 @@ public class Enemy_AI : MonoBehaviour {
 
 	void Update()
 	{
-		StartCoroutine(GetDirectionAndDistance ());
-		MoveToPlayer ();
+		if (target != null) 
+		{
+			StartCoroutine (GetDirectionAndDistance ());
+			MoveToPlayer ();
+		} 
+		else 
+		{
+			FindPlayer ();
+		}
+
 	}
 
 	IEnumerator GetDirectionAndDistance()
 	{
 		yield return new WaitForSeconds (1);
-		if (target == null)
-			FindPlayer ();
-
-		distanceToPlayer = Vector2.Distance (target.transform.position, this.transform.position);
-		targetDirection = (target.position - this.transform.position);
+		if (target != null) 
+		{
+			distanceToPlayer = Vector2.Distance (target.transform.position, this.transform.position);
+			targetDirection = (target.position - this.transform.position);
+		}
 	}
 
 	void MoveToPlayer()

@@ -48,7 +48,6 @@ public class Player : MonoBehaviour {
 		if (playerStats.health <= 0) 
 		{
 			playerStats.health = 0;
-			Debug.Log ("KILLIN' PLAYER!!1");
 			StartCoroutine(KillPlayer());
 		}
 	}

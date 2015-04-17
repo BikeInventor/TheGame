@@ -48,6 +48,8 @@ public class GameMaster : MonoBehaviour {
 
 	void OnGUI()
 	{
+		if (GameObject.FindObjectOfType<Player> () == null) 
+			return;
 		int itemCount = inventory.GetActiveItemValue ();
 		Texture itemTexture = new Texture();
 		int bulletsInMagazine = 0;
@@ -55,9 +57,13 @@ public class GameMaster : MonoBehaviour {
 		int otherMagazines = 0;
 		System.String activeItemName = inventory.GetActiveItemName ();
 
+		if (GameObject.Find (activeItemName) == null)
+			return;
+
 		bulletsInMagazine = GameObject.Find (activeItemName).GetComponent<Weapon>().bulletsInMagazine;
 		currentMagazine = itemCount % bulletsInMagazine;
 		otherMagazines = itemCount - currentMagazine;
+
 		if (currentMagazine == 0 && otherMagazines != 0) 
 		{
 			currentMagazine += bulletsInMagazine;

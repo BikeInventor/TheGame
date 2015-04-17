@@ -25,7 +25,7 @@ public class ArmRotation : MonoBehaviour {
 	// Возвращает true, если руку можно повернуть на данный угол и false, если нельзя
 	public bool isValidAngle()
 	{
-
+		/*
 		// Направление игрока. Положительное - смотрит вправо, отрицательное - влево.
 		float playerDirection = GameObject.Find ("Graphics").transform.localScale.x;
 
@@ -40,6 +40,8 @@ public class ArmRotation : MonoBehaviour {
 				return true;
 		}
 		return false;
+		*/
+		return true;
 	}
 }
 
