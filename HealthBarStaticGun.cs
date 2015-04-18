@@ -11,12 +11,9 @@ public class HealthBarStaticGun : MonoBehaviour {
 
 	void Awake () 
 	{
-		//searchingScript = this.GetComponentInParent ().GetComponent<PlayerSearching>();
-		//searchingScript = this.GetComponentInParent<PlayerSearching> ();
 		searchingScript = this.transform.parent.gameObject.GetComponentInChildren <PlayerSearching> ();
 	}
 		
-	// Update is called once per frame
 	void Update () 
 	{
 		float healthPercent = searchingScript.health / (float)searchingScript.maxHealth;

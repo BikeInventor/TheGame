@@ -119,7 +119,7 @@ namespace UnitySampleAssets._2D
                 else if (move < 0 && facingRight)
                     Flip();
             }
-            if (grounded && jump && anim.GetBool("Ground"))
+            if (grounded && jump && anim.GetBool("Ground") && !isSitting)
             {
                 grounded = false;
                 anim.SetBool("Ground", false);

@@ -95,14 +95,7 @@ public class Enemy_AI : MonoBehaviour {
 		{
 			System.String currentWeapon = inventory.GetActiveItemName ();
 			float damage = GameObject.Find (currentWeapon).GetComponent<Weapon> ().damage;
-			health -= damage;
-
-			audio.clip = alienHit;
-			if (!audio.isPlaying)
-				audio.Play ();
-
-			if (health <= 0)
-				Death ();
+			DamageAlien (damage);
 		} 
 		if (col.gameObject.tag == "Obstacle") 
 		{
@@ -110,7 +103,19 @@ public class Enemy_AI : MonoBehaviour {
 		}
 	}
 
-	void Death()
+	public void DamageAlien (float damage)
+	{
+		health -= damage;
+		
+		audio.clip = alienHit;
+		if (!audio.isPlaying)
+			audio.Play ();
+		
+		if (health <= 0)
+			Death ();
+	}
+
+	public void Death()
 	{
 		Destroy (this.gameObject);
 	}

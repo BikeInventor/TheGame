@@ -16,10 +16,11 @@ public class GameMaster : MonoBehaviour {
 	//======================================================================
 	public Transform pistolPrefab;
 	private Inventory inventory;
+	private Texture itemTexture;
 
 	void Start () 
 	{
-		//Screen.showCursor = false;
+		Screen.showCursor = false;
 		if (gm == null) 
 		{
 			gm = GameObject.FindGameObjectWithTag("GM").GetComponent<GameMaster>();
@@ -51,7 +52,7 @@ public class GameMaster : MonoBehaviour {
 		if (GameObject.FindObjectOfType<Player> () == null) 
 			return;
 		int itemCount = inventory.GetActiveItemValue ();
-		Texture itemTexture = new Texture();
+		itemTexture = new Texture();
 		int bulletsInMagazine = 0;
 		int currentMagazine = 0;
 		int otherMagazines = 0;
@@ -70,28 +71,33 @@ public class GameMaster : MonoBehaviour {
 			otherMagazines -= bulletsInMagazine;
 		}
 
-		switch (inventory.GetActiveItemName()) 
-		{
-			case "Pistol":
-			{
-				itemTexture = pistolTexture;
-				break;
-			}
-			case "Rifle":
-			{
-				itemTexture = rifleTexture;
-				break;
-			}
-			case "MachineGun":
-			{
-				itemTexture = machineGunTexture;
-				break;
-			}
-		}
+		SetGuiTexture ();
 		GUI.skin.box.fontSize = 20;
 		GUI.skin.box.imagePosition = ImagePosition.ImageAbove;
 		GUI.Box (new Rect (1, 1, 250f, 150f), itemTexture);
 		GUI.Box (new Rect (1, 150, 250f, 30f), "Ammo: " + currentMagazine + "/" + otherMagazines);
+	}
+
+	void SetGuiTexture()
+	{
+		switch (inventory.GetActiveItemName()) 
+		{
+		case "Pistol":
+		{
+			itemTexture = pistolTexture;
+			break;
+		}
+		case "Rifle":
+		{
+			itemTexture = rifleTexture;
+			break;
+		}
+		case "MachineGun":
+		{
+			itemTexture = machineGunTexture;
+			break;
+		}
+	}
 	}
 	
 }

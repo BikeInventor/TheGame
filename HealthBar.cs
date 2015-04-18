@@ -9,11 +9,6 @@ public class HealthBar : MonoBehaviour {
 	public Color maxHealthColor = new Color (255/255f, 63/255f, 63/255f);
 	public Color minHealthColor = new Color (64/255f, 137/255f, 255/255f);
 
-	// Use this for initialization
-	void Start () {
-	}
-		
-	// Update is called once per frame
 	void Update () 
 	{
 		if (player == null)

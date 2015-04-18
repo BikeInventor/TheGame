@@ -10,6 +10,7 @@ public class PlayerSearching : MonoBehaviour {
 	public float shootingDistance = 15;
 	public int damage = 10;
 	public float fireRate = 5;
+	public float hackingDelay;
 	bool lowerRiched = false;
 	bool higherRiched = true;
 	Transform firePoint;
@@ -21,27 +22,26 @@ public class PlayerSearching : MonoBehaviour {
 	public Transform MuzzleFlashPrefab;
 	[HideInInspector]
 	public float maxHealth = 200;
-	public bool isPlayerVisible = false;
+	public bool isTargetVisible = false;
 	private float distanceToPlayer = 20;
 	private Transform target;
 	public float effectSpawnRate = 10;
 	private float timeToSpawnEffect = 0;
 	private float timeToFire = 0;
 	private Inventory inventory;
-	private GameObject targetObj;
-
+	public bool isHacked = false;
 
 	void Start () {
-		FindPlayer ();
 		inventory = GameObject.FindObjectOfType<Inventory> ();
 		firePoint = transform.FindChild ("FirePoint");
 		directionPoint = transform.FindChild ("DirectionPoint");
+		SetGunColor ();
 	}
 	
 	void Update () {
-		if (!isPlayerVisible)
+		if (!isTargetVisible)
 			Rotate ();
-		DetectPlayer ();
+		DetectTarget ();
 	}
 
 	void Rotate()
@@ -63,62 +63,55 @@ public class PlayerSearching : MonoBehaviour {
 		}
 	}
 
-	void DetectPlayer()
+	void DetectTarget()
 	{
 		Vector2 firePointPosition = new Vector2 (firePoint.position.x, firePoint.position.y);
 		Vector2 directionPointPosition = new Vector2 (directionPoint.position.x,  directionPoint.position.y);
-		RaycastHit2D hit = Physics2D.Raycast (firePointPosition, firePointPosition - directionPointPosition, -100, whatToHit);
+		RaycastHit2D hit = Physics2D.Raycast (firePointPosition, firePointPosition - directionPointPosition, -shootingDistance, whatToHit);
 
-		isPlayerVisible = false;
-
+		isTargetVisible = false;
+		if (hit.collider == null)
+			return;
 		if (hit.collider.name != null) 
 		{
-			Debug.Log (hit.collider.name);
-			if (hit.collider.name.Contains("Player")) 
+			if (!isHacked && hit.collider.name.Contains("Player"))
 			{
 				Debug.DrawLine (firePointPosition, hit.point, Color.blue);
-				GetDistance ();
+				isTargetVisible = true;
+				Shoot(hit.transform.gameObject);
+			}
+			if (isHacked && hit.collider.name.Contains("Alien"))
+			{
+				Debug.DrawLine (firePointPosition, hit.point, Color.red);
+				isTargetVisible = true;
+				Shoot (hit.transform.gameObject);
 			}
 		}
 	}
 
-	void GetDistance()
-	{
-		FindPlayer ();
-		distanceToPlayer = Vector2.Distance (target.transform.position, this.transform.position);
-
-		if (distanceToPlayer <= shootingDistance) {
-			isPlayerVisible = true;
-			Shoot ();
-		} 
-		else 
-		{
-			isPlayerVisible = false;
-		}
-	}
-
-	void FindPlayer()
-	{
-		targetObj = GameObject.FindGameObjectWithTag("Player");
-		if (targetObj != null) 
-		{
-			target = targetObj.transform;
-		} 
-	}
-
-	void Shoot () 
+	void Shoot (GameObject targetObj) 
 	{
 		if (Time.time <= timeToFire)
 			return;
 		timeToFire = Time.time + 1 / fireRate;
 
-		GameObject.FindGameObjectWithTag ("Player").GetComponent<Player> ().DamagePlayer (damage);
+		if (!isHacked) 
+		{
+			targetObj.GetComponent<Player> ().DamagePlayer (damage);
+		} 
+		else 
+		{
+			targetObj.GetComponent<Enemy_AI> ().DamageAlien (damage);
+		}
+
 		Effect ();
 		audio.clip = shootingSound;
+
 		if (audio != null) 
 		{
 			audio.Play();
 		}
+
 		timeToSpawnEffect = Time.time + 1/effectSpawnRate;
 	}
 	
@@ -138,11 +131,38 @@ public class PlayerSearching : MonoBehaviour {
 		{
 			System.String currentWeapon = inventory.GetActiveItemName ();
 			float damage = GameObject.Find (currentWeapon).GetComponent<Weapon> ().damage;
-			health -= damage;
-
-			if (health <= 0)
-				Death ();
+			this.DamageGun(damage);
 		} 
+		if (col.gameObject.tag.Contains("Player"))
+		{
+			if (!isHacked)
+				StartCoroutine(Hack ());
+		}
+	}
+
+	void DamageGun(float damage)
+	{
+		health -= damage;		
+		if (health <= 0)
+			Death ();
+	}
+
+	IEnumerator Hack()
+	{
+		isHacked = true;
+		SetGunColor ();
+		yield return new WaitForSeconds (hackingDelay);
+		isHacked = false;
+		SetGunColor ();
+		this.DamageGun (maxHealth / 4);
+	}
+
+	void SetGunColor ()
+	{
+		if (isHacked)
+			this.GetComponent<SpriteRenderer> ().color = Color.green;
+		else
+			this.GetComponent<SpriteRenderer> ().color = Color.red;
 	}
 	
 	void Death()

@@ -36,7 +36,6 @@ namespace UnitySampleAssets._2D
 				FindPlayer ();
 				return;
 			}
-
 				// only update lookahead pos if accelerating or changed direction
 				float xMoveDelta = (target.position - lastTargetPosition).x;
 
@@ -64,18 +63,10 @@ namespace UnitySampleAssets._2D
 				GameObject searchResult = GameObject.FindGameObjectWithTag("Player");
 				if (searchResult != null)
 					target = searchResult.transform;
-
-				
-				if (target == null)
-					Debug.Log ("TARGET = NULL!!!");
-
-
-
 				nexTimeToSearch = Time.time + 0.5f;
 			}
 		}
-
-
+	
 
     }
 }

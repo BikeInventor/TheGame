@@ -6,8 +6,7 @@ public class MedKitPickUp: MonoBehaviour {
 	public AudioClip medKitPickedUp;
 	
 	void OnTriggerEnter2D (Collider2D info) 
-	{
-		
+	{	
 		if (info.tag == "Player") 
 		{
 			int currentHealth = GameObject.FindObjectOfType<Player>().GetComponent<Player>().playerStats.health;
@@ -17,7 +16,6 @@ public class MedKitPickUp: MonoBehaviour {
 			GameObject.FindObjectOfType<Player>().GetComponent<Player>().playerStats.health = newHealth;
 			AudioSource.PlayClipAtPoint(medKitPickedUp, this.transform.position);
 			Destroy(this.gameObject);
-		}
-		
+		}		
 	}
 }

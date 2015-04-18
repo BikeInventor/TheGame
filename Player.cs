@@ -71,7 +71,6 @@ public class Player : MonoBehaviour {
 			audio.Play();
 
 		anim.SetBool("Dead",true);
-
 		Destroy (GameObject.Find ("AsArm"));
 
 		yield return new WaitForSeconds (delayBeforeDead);

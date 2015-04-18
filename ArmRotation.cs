@@ -6,7 +6,7 @@ public class ArmRotation : MonoBehaviour {
 	public int RotationOffset = 0;	
 	// Угол, на который поворачиваем руку
 	private float rotZ = 0;
-	// Update is called once per frame
+
 	void Update () 
 	{	
 		// Вектор м/у позицией курсора и рукой
@@ -14,19 +14,14 @@ public class ArmRotation : MonoBehaviour {
 		difference.Normalize ();
 		// Считаем на сколько повернуть
 		rotZ = Mathf.Atan2 (difference.y, difference.x) * Mathf.Rad2Deg;
-		// Поворачиваем руку, если угол допустим при данном направлении игрока
-
 
 		if (isValidAngle()) 
 			transform.rotation = Quaternion.Euler (new Vector3(0f, 0f, rotZ + RotationOffset));
-
-
 	}
-	// Возвращает true, если руку можно повернуть на данный угол и false, если нельзя
+	// Возвращает true, если руку можно повернуть на данный угол
 	public bool isValidAngle()
 	{
 		/*
-		// Направление игрока. Положительное - смотрит вправо, отрицательное - влево.
 		float playerDirection = GameObject.Find ("Graphics").transform.localScale.x;
 
 		if (playerDirection > 0) // Вправо
