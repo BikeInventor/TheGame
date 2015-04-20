@@ -17,6 +17,9 @@ public class PlayerSearching : MonoBehaviour {
 	Transform directionPoint;
 	public LayerMask whatToHit;
 	public AudioClip shootingSound;
+	public AudioClip hackingSound;
+	public AudioClip explosionSound;
+	public Transform explosionPrefab;
 
 	public Transform BulletTrailPrefab;
 	public Transform MuzzleFlashPrefab;
@@ -151,10 +154,25 @@ public class PlayerSearching : MonoBehaviour {
 	{
 		isHacked = true;
 		SetGunColor ();
+		audio.clip = hackingSound;
+		audio.Play ();
 		yield return new WaitForSeconds (hackingDelay);
 		isHacked = false;
 		SetGunColor ();
 		this.DamageGun (maxHealth / 4);
+	}
+
+	void OnGUI()
+	{
+		Player player = GameObject.FindObjectOfType<Player> ();
+		if (player != null) 
+		{
+			distanceToPlayer = Vector2.Distance (this.transform.position, player.transform.position);
+			if (distanceToPlayer < 5 && !isHacked) 
+			{
+				GUI.Box (new Rect (0, Screen.height - 30, Screen.width, 30), "Press <E> to hack enemy gun");
+			}
+		}
 	}
 
 	void SetGunColor ()
@@ -168,6 +186,8 @@ public class PlayerSearching : MonoBehaviour {
 	void Death()
 	{
 		Destroy (transform.parent.gameObject);
+		GameObject explosion = Instantiate (explosionPrefab, this.transform.position, this.transform.rotation) as GameObject;
+		AudioSource.PlayClipAtPoint(explosionSound, this.transform.position, 100);
 	}
 }
 

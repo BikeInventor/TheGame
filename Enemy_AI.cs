@@ -10,6 +10,7 @@ public class Enemy_AI : MonoBehaviour {
 	public int attackDistance = 20;
 	public int jumpForce = 3;
 	public AudioClip alienHit;
+	public AudioClip alienDead;
 
 	private Rigidbody2D rb;
 	private Animator anim;
@@ -111,13 +112,20 @@ public class Enemy_AI : MonoBehaviour {
 		if (!audio.isPlaying)
 			audio.Play ();
 		
-		if (health <= 0)
+		if (health <= 0) 
+		{
+			health = 0;
 			Death ();
+		}
+
 	}
 
 	public void Death()
 	{
-		Destroy (this.gameObject);
+		Destroy (this.gameObject, 1f);
+		anim.SetBool ("isDead", true);
+		this.GetComponent<Enemy_AI> ().enabled = false;
+		AudioSource.PlayClipAtPoint(alienDead, this.transform.position, 100);
 	}
 
 
